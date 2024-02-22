@@ -9,6 +9,8 @@ steps:
       - -d
       - --build
       - --force-recreate
+      - >-
+        $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
     id: docker-compose
   - name: gcr.io/cloud-builders/docker
     args:
@@ -46,4 +48,4 @@ substitutions:
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
-  - danswer-tavern
+  - us-central1-docker.pkg.dev/danswer-tavern-dev/cloud-run-source-deploy/danswer_tavern/danswer-tavern
