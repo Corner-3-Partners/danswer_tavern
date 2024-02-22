@@ -241,8 +241,8 @@ services:
     build:
       context: ../../backend
       dockerfile: Dockerfile.model_server
-    profiles:
-      - "model-server"
+    #profiles:
+    #  - "model-server"
     command: uvicorn model_server.main:app --host 0.0.0.0 --port 9000
     restart: always
     environment:
