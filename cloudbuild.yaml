@@ -7,7 +7,7 @@ steps:
       - danswer-stack
       - up
       - -d
-      - --force-recreate
+      - --pull-always
     id: docker-compose
   - name: gcr.io/cloud-builders/docker
     args:
