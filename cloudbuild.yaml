@@ -2,7 +2,7 @@ steps:
   - name: docker/compose:latest
     args:
       - -f
-      - ./deployment/docker-compose/docker-compose.dev.ymp
+      - ./deployment/docker-compose/docker-compose.dev.yml
       - -p
       - danswer-stack
       - up
