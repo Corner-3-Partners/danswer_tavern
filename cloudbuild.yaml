@@ -1,50 +1,59 @@
 steps:
-  - name: docker/compose:latest
+  - name: 'docker/compose:latest'
+    args: 
+      - '-f'
+      - 'deployment/docker_compose/docker-compose.dev.yml'
+      - '-p'
+      - 'danswer-stack'
+      - 'up'
+      - '-d'
+      - '--build'
+      - '--force-recreate'
+    id: Build
+  - name: 'gcr.io/cloud-builders/docker'
     args:
-      - -f
-      - deployment/docker_compose/docker-compose.dev.yml
-      - -p
-      - danswer-stack
-      - up
-      - -d
-      - --build
-      - --force-recreate
-      - >-
-        $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
-    id: docker-compose
-  - name: gcr.io/cloud-builders/docker
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/danswer-backend:latest'
+    id: PushBackend
+  - name: 'gcr.io/cloud-builders/docker'
     args:
-      - push
-      - >-
-        $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
-    id: Push
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/danswer-web-server:latest'
+    id: PushWebServer
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
-      - run
-      - services
-      - update
-      - $_SERVICE_NAME
+      - 'run'
+      - 'services'
+      - 'update'
+      - 'danswer-api'
       - '--platform=managed'
-      - >-
-        --image=$_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
-      - >-
-        --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID
-      - '--region=$_DEPLOY_REGION'
+      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/danswer-backend:latest'
+      - '--region=us-central1'
       - '--quiet'
-    id: Deploy
-    entrypoint: gcloud
+    id: DeployBackend
+    entrypoint: 'gcloud'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - 'run'
+      - 'services'
+      - 'update'
+      - 'danswer-web'
+      - '--platform=managed'
+      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/danswer-web-server:latest'
+      - '--region=us-central1'
+      - '--quiet'
+    id: DeployWebServer
+    entrypoint: 'gcloud'
 images:
-  - >-
-    $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/danswer-backend:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/danswer-web-server:latest'
 options:
-  substitutionOption: ALLOW_LOOSE
-  logging: CLOUD_LOGGING_ONLY
+  substitutionOption: 'ALLOW_LOOSE'
+  logging: 'CLOUD_LOGGING_ONLY'
 substitutions:
-  _AR_HOSTNAME: us-central1-docker.pkg.dev
-  _PLATFORM: managed
-  _SERVICE_NAME: danswer-tavern
-  _DEPLOY_REGION: us-central1
-  _TRIGGER_ID: c14c3304-4763-4c19-ba8b-b706de41edc6
+  _AR_HOSTNAME: 'us-central1-docker.pkg.dev'
+  _DEPLOY_REGION: 'us-central1'
+  _SERVICE_NAME: 'danswer-tavern'
 tags:
-  - gcp-cloud-build-deploy-cloud-run
-  - gcp-cloud-build-deploy-cloud-run-managed
+  - 'gcp-cloud-build-deploy-cloud-run'
+  - 'gcp-cloud-build-deploy-cloud-run-managed'
