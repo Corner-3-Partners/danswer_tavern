@@ -48,4 +48,3 @@ substitutions:
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
-  - us-central1-docker.pkg.dev/danswer-tavern-dev/cloud-run-source-deploy/danswer_tavern/danswer-tavern
