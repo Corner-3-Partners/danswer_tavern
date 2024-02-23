@@ -6,9 +6,7 @@ ENV DANSWER_VERSION=${DANSWER_VERSION}
 RUN echo "DANSWER_VERSION: ${DANSWER_VERSION}"
 
 COPY ./requirements/model_server.txt /tmp/requirements.txt
-RUN pip install uv
-RUN uv venv
-RUN uv pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
 
 RUN apt-get remove -y --allow-remove-essential perl-base && \
     apt-get autoremove -y
