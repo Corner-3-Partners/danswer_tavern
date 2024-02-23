@@ -19,21 +19,19 @@ Revisit README.old for original deployment directions.
 
    4. Uncomment `GEN_AI_API_KEY=` and set it to your OpenAI key.
 
-   5. Copy .\deployment\docker_compose\env.nginx.template and rename copy to .env.nginx, change `DOMAIN=` to `http://localhost:3000`
-
 ## Docker Compose:
 
 0. Ensure Docker Engine is running.
 
-1. Run `docker compose -f .\deployment\docker_compose\docker-compose.prod-no-letsencrypt.yml -p danswer-stack up -d --build`
+1. Run `docker compose -f .\deployment\docker_compose\docker-compose.dev.yml -p danswer-stack up -d --build`
    - optionally add --force-recreate (if you don't want containers to be reused)
    - optionally replace --build with --pull always (if you don't want to rebuild from source)
    - optionally follow README.old to set and use letsencrypt for https (uses other prod yml)
 
 2. To shut down the deployment, run:
-   - To stop the containers: `docker compose -f .\deployment\docker_compose\docker-compose.prod-no-letsencrypt.yml -p danswer-stack stop`
-   - To delete the containers: `docker compose -f .\deployment\docker_compose\docker-compose.prod-no-letsencrypt.yml -p danswer-stack down`
+   - To stop the containers: `docker compose -f .\deployment\docker_compose\docker-compose.dev.yml -p danswer-stack stop`
+   - To delete the containers: `docker compose -f .\deployment\docker_compose\docker-compose.dev.yml -p danswer-stack down`
 
 3. To completely remove Danswer run:
    - **WARNING, this will also erase your indexed data and users**
-   - `docker compose -f .\deployment\docker_compose\docker-compose.prod-no-letsencrypt.yml -p danswer-stack down -v`
+   - `docker compose -f .\deployment\docker_compose\docker-compose.dev.yml -p danswer-stack down -v`
