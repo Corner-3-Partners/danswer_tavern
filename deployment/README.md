@@ -1,78 +1,39 @@
-<!-- DANSWER_METADATA={"link": "https://github.com/danswer-ai/danswer/blob/main/deployment/README.md"} -->
+# Deploying Tavern-Danswer
+Revisit README.old for original deployment directions.
 
-# Deploying Danswer
-The two options provided here are the easiest ways to get Danswer up and running.
+## Set up venv with uv
 
-- Docker Compose is simpler and default values are already preset to run right out of the box with a single command.
-As everything is running on a single machine, this may not be as scalable depending on your hardware, traffic and needs.
+   1. In terminal `pip install uv`
 
-- Kubernetes deployment is also provided. Depending on your existing infrastructure, this may be more suitable for
-production deployment but there are a few caveats.
-  - User auth is turned on by default for Kubernetes (with the assumption this is for production use)
-  so you must either update the deployments to turn off user auth or provide the values shown in the example
-  secrets.yaml file.
-  - The example provided assumes a blank slate for existing Kubernetes deployments/services. You may need to adjust the
-  deployments or services according to your setup. This may require existing Kubernetes knowledge or additional
-  setup time.
+   2. In terminal `uv .venv`
 
-All the features of Danswer are fully available regardless of the deployment option.
+   3. In terminal `.\.venv\Scripts\activate`
 
-For information on setting up connectors, check out https://docs.danswer.dev/connectors/overview
+## Set up .env
 
+   1. Copy .\deployment\docker_compose\env.prod.template and rename copy to .env
+
+   2. Set `AUTH_TYPE=disabled` for local development. If using this configuration for cloud deployment, set to google_oauth and use GCP to get client_id and client_secret.
+
+   3. Delete or comment out `SECRET=` (& the Google OAuth variables if you're not using them)
+
+   4. Uncomment `GEN_AI_API_KEY=` and set it to your OpenAI key.
+
+   5. Copy .\deployment\docker_compose\env.nginx.template and rename copy to .env.nginx, change `DOMAIN=` to `http://localhost:3000`
 
 ## Docker Compose:
-Docker Compose provides the easiest way to get Danswer up and running.
 
-Requirements: Docker and docker compose
+0. Ensure Docker Engine is running.
 
-1. To run Danswer, navigate to `docker_compose` directory and run the following:
-   - `docker compose -f docker-compose.dev.yml -p danswer-stack up -d --pull always --force-recreate`
-      - or run: `docker compose -f docker-compose.dev.yml -p danswer-stack up -d --build --force-recreate`
-to build from source
-   - Downloading images or packages/requirements may take 15+ minutes depending on your internet connection.
-
+1. Run `docker compose -f .\deployment\docker_compose\docker-compose.prod-no-letsencrypt.yml -p danswer-stack up -d --build`
+   - optionally add --force-recreate (if you don't want containers to be reused)
+   - optionally replace --build with --pull always (if you don't want to rebuild from source)
+   - optionally follow README.old to set and use letsencrypt for https (uses other prod yml)
 
 2. To shut down the deployment, run:
-   - To stop the containers: `docker compose -f docker-compose.dev.yml -p danswer-stack stop`
-   - To delete the containers: `docker compose -f docker-compose.dev.yml -p danswer-stack down`
-
+   - To stop the containers: `docker compose -f .\deployment\docker_compose\docker-compose.prod-no-letsencrypt.yml -p danswer-stack stop`
+   - To delete the containers: `docker compose -f .\deployment\docker_compose\docker-compose.prod-no-letsencrypt.yml -p danswer-stack down`
 
 3. To completely remove Danswer run:
    - **WARNING, this will also erase your indexed data and users**
-   - `docker compose -f docker-compose.dev.yml -p danswer-stack down -v`
-
-
-Additional steps for user auth and https if you do want to use Docker Compose for production:
-
-1. Set up a `.env` file in this directory with relevant environment variables.
-   - Refer to `env.prod.template`
-   - To turn on user auth, set:
-     - GOOGLE_OAUTH_CLIENT_ID=\<your GCP API client ID\>
-     - GOOGLE_OAUTH_CLIENT_SECRET=\<associated client secret\>
-     - Refer to https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid
-
-2. Set up https:
-   - Set up a `.env.nginx` file in this directory based on `env.nginx.template`.
-   - `chmod +x init-letsencrypt.sh` + `./init-letsencrypt.sh` to set up https certificate.
-
-3. Follow the above steps but replacing dev with prod.
-
-
-## Kubernetes:
-Depending on your deployment needs Kubernetes may be more suitable. The yamls provided will work out of the box but the
-intent is for you to customize the deployment to fit your own needs. There is no data replication or auto-scaling built
-in for the provided example.
-
-Requirements: a Kubernetes cluster and kubectl
-
-**NOTE: This setup does not explicitly enable https, the assumption is you would have this already set up for your
-prod cluster**
-
-1. To run Danswer, navigate to `kubernetes` directory and run the following:
-   - `kubectl apply -f .`
-
-2. To remove Danswer, run:
-   - **WARNING, this will also erase your indexed data and users**
-   - `kubectl delete -f .`
-   - To not delete the persistent volumes (Document indexes and Users), specify the specific `.yaml` files instead of 
-   `.` without specifying delete on persistent-volumes.yaml.
+   - `docker compose -f .\deployment\docker_compose\docker-compose.prod-no-letsencrypt.yml -p danswer-stack down -v`

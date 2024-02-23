@@ -1,8 +1,7 @@
-<!-- DANSWER_METADATA={"link": "https://github.com/danswer-ai/danswer/blob/main/README.md"} -->
+<p align="center">
+<p align="center">Tavern Specific Notes:</p>
 
-<h2 align="center">
-<a href="https://www.danswer.ai/"> <img width="50%" src="https://github.com/danswer-owners/danswer/blob/1fabd9372d66cd54238847197c33f091a724803b/DanswerWithName.png?raw=true)" /></a>
-</h2>
+Testing out Danswer fork.
 
 <p align="center">
 <p align="center">Open Source Unified Search and Gen-AI Chat with your Docs.</p>

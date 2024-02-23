@@ -19,8 +19,9 @@ RUN apt-get update && \
 # Install Python dependencies
 # Remove py which is pulled in by retry, py is not needed and is a CVE
 COPY ./requirements/default.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt && \
-    pip uninstall -y py && \
+RUN pip install uv \
+    uv pip install --no-cache-dir --upgrade -r /tmp/requirements.txt && \
+    uv pip uninstall -y py && \
     playwright install chromium && playwright install-deps chromium && \
     ln -s /usr/local/bin/supervisord /usr/bin/supervisord
 
