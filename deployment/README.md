@@ -5,7 +5,8 @@ Revisit README.old for original deployment directions.
 
    1. In terminal `pip install uv`
 
-   2. In terminal `uv .venv`
+   2. In terminal `uv venv --python 3.11`
+      - python 3.11 is recommended by the developers, 3.12 doesn't work with tensorflow. I'm unsure about older versions.
 
    3. In terminal `.\.venv\Scripts\activate`
 
