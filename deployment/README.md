@@ -35,3 +35,11 @@ Revisit README.old for original deployment directions.
 3. To completely remove Danswer run:
    - **WARNING, this will also erase your indexed data and users**
    - `docker compose -f .\deployment\docker_compose\docker-compose.dev.yml -p danswer-stack down -v`
+
+## For development
+
+1. Run the following as relevant:
+      `uv pip install -r .\backend\requirements\cdk.txt`
+      `uv pip install -r .\backend\requirements\default.txt`
+      `uv pip install -r .\backend\requirements\dev.txt`
+      `uv pip install -r .\backend\requirements\model_server.txt`
