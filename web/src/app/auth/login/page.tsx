@@ -75,7 +75,7 @@ const Page = async ({
           {authUrl && authTypeMetadata && (
             <>
               <h2 className="text-center text-xl text-strong font-bold mt-6">
-                Login to Tavern-Danswer
+                Login to Tavern
               </h2>
 
               <SignInButton
