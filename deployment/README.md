@@ -20,6 +20,8 @@ Revisit README.old for original deployment directions.
 
    4. Uncomment `GEN_AI_API_KEY=` and set it to your OpenAI key.
 
+   5. Add `DISABLE_TELEMETRY=True`
+
 ## Docker Compose:
 
 0. Ensure Docker Engine is running.
