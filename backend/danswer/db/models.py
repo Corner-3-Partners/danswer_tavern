@@ -36,8 +36,8 @@ from danswer.configs.constants import MessageType
 from danswer.configs.constants import SearchFeedbackType
 from danswer.connectors.models import InputType
 from danswer.dynamic_configs.interface import JSON_ro
-from danswer.search.models import RecencyBiasSetting
-from danswer.search.models import SearchType
+from danswer.search.enums import RecencyBiasSetting
+from danswer.search.enums import SearchType
 
 
 class IndexingStatus(str, PyEnum):
@@ -67,6 +67,11 @@ class IndexModelStatus(str, PyEnum):
     PAST = "PAST"
     PRESENT = "PRESENT"
     FUTURE = "FUTURE"
+
+
+class ChatSessionSharedStatus(str, PyEnum):
+    PUBLIC = "public"
+    PRIVATE = "private"
 
 
 class Base(DeclarativeBase):
@@ -586,6 +591,11 @@ class ChatSession(Base):
     one_shot: Mapped[bool] = mapped_column(Boolean, default=False)
     # Only ever set to True if system is set to not hard-delete chats
     deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    # controls whether or not this conversation is viewable by others
+    shared_status: Mapped[ChatSessionSharedStatus] = mapped_column(
+        Enum(ChatSessionSharedStatus, native_enum=False),
+        default=ChatSessionSharedStatus.PRIVATE,
+    )
     time_updated: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
